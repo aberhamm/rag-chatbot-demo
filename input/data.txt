@@ -1,0 +1,59 @@
+What is the refund policy?
+Customers may request a full refund within 30 days of purchase by contacting support.
+
+How do I change my account password?
+Go to Profile → Security, enter your current password, then choose a new one.
+
+Where can I find the user manual?
+The user manual is available under Help → Documentation in your dashboard.
+
+Can I integrate with third-party services?
+Yes, we offer integrations with Zapier, Slack, and Microsoft Teams.
+
+What are the system requirements?
+You need at least 4 GB RAM, a dual-core CPU, and a stable internet connection.
+
+Is there a mobile app available?
+Yes, our mobile app can be downloaded from both the App Store and Google Play.
+
+How do I update my billing information?
+Navigate to Billing → Payment Methods and click “Edit” next to your stored card.
+
+Do you offer a free trial?
+Yes, we provide a 14-day free trial with full access to all features.
+
+How can I contact customer support?
+Email support@company.com or use the live chat widget in the bottom right corner.
+
+What data formats are supported for import?
+You can import CSV, JSON, and XML files up to 100 MB each.
+
+How do I enable two-factor authentication?
+In Profile → Security, toggle on 2FA and follow the on-screen setup instructions.
+
+What happens if I exceed my usage quota?
+You’ll receive an email alert; additional usage will be billed at the overage rate.
+
+Can I export my data?
+Yes, go to Settings → Export Data to download a ZIP containing your files.
+
+How do I delete my account?
+Please contact support to request account deletion; it cannot be undone.
+
+Is there a dark mode option?
+Yes, enable Dark Mode under Settings → Appearance.
+
+How often is the data backed up?
+Backups occur daily at 2 AM UTC and are retained for 30 days.
+
+Can I customize email notifications?
+Yes, visit Notifications in your user settings to opt in or out of each type.
+
+What security measures are in place?
+We use AES-256 encryption at rest, TLS in transit, and regular vulnerability scans.
+
+Do you offer an API?
+Yes, our REST API documentation is available under Developers → API Reference.
+
+How can I reset my API key?
+Go to Developers → API Keys and click “Regenerate” next to the key you want to reset.
