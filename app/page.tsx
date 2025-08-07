@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useChatContext } from '@/contexts/ChatContext';
+import { RAGLoadingIndicator } from '@/components/RAGLoadingIndicator';
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, hasActiveChat, clearChat } = useChatContext();
+  const { messages, input, handleInputChange, handleSubmit, hasActiveChat, clearChat, isLoading } = useChatContext();
 
   const customHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,10 +71,26 @@ export default function Chat() {
           {messages.map((message, index) => (
             <div key={index}>{renderMessage(message)}</div>
           ))}
+
+          {/* Show RAG Pipeline Loading Indicator when AI is processing */}
+          {isLoading && (
+            <div className="mb-4">
+              <RAGLoadingIndicator />
+            </div>
+          )}
         </ScrollArea>
         <form onSubmit={customHandleSubmit} className="flex space-x-2">
-          <Input type="text" value={input} onChange={handleInputChange} placeholder="Type your message here..." className="flex-1" />
-          <Button type="submit">Send</Button>
+          <Input
+            type="text"
+            value={input}
+            onChange={handleInputChange}
+            placeholder={isLoading ? "AI is processing..." : "Type your message here..."}
+            className="flex-1"
+            disabled={isLoading}
+          />
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? '⏳' : 'Send'}
+          </Button>
         </form>
       </CardContent>
     </Card>
