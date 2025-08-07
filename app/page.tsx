@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useChatContext } from '@/contexts/ChatContext';
-import { RAGLoadingIndicator } from '@/components/RAGLoadingIndicator';
+import { RAGLoadingIndicator } from '@/components/rag-loading-indicator';
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, hasActiveChat, clearChat, isLoading } = useChatContext();
