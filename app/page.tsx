@@ -11,6 +11,7 @@ import { RAGLoadingIndicator } from '@/components/rag-loading-indicator';
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit, hasActiveChat, clearChat, isLoading } = useChatContext();
+  const [showDebug, setShowDebug] = useState(false);
 
   const customHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,40 +26,51 @@ export default function Chat() {
       <div className={`mb-4 ${isUser ? 'text-right' : 'text-left'}`}>
         <div className={`inline-block p-2 rounded-lg ${isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{message.content}</div>
 
-        {/* Debug section for tool calls */}
-        {!isUser && hasToolInvocations && message.toolInvocations && (
-          <ToolCallDebugSection toolInvocations={message.toolInvocations} />
-        )}
+                      {/* Debug section for tool calls */}
+              {!isUser && hasToolInvocations && message.toolInvocations && showDebug && (
+                <ToolCallDebugSection toolInvocations={message.toolInvocations} />
+              )}
       </div>
     );
   };
 
-  return (
-    <div className="container mx-auto p-4 max-w-2xl">
-      <div className="mb-6 flex justify-between items-center">
-        <Link
-          href="/embed"
-          className="inline-flex text-sm font-normal items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Add Content to Knowledge Base
-        </Link>
-
-        {hasActiveChat && (
-          <Button
-            onClick={clearChat}
-            variant="outline"
-            size="sm"
-            className="text-gray-600 hover:text-red-600"
-          >
-            Clear Chat
-          </Button>
-        )}
+    return (
+    <div className="container mx-auto p-4 max-w-4xl">
+      {/* Header Section */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          RAG Chatbot Demo
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300">
+          Ask questions and get answers powered by vector search and AI
+        </p>
       </div>
 
-      <Card className="w-full">
+      {/* Chat Interface - Primary Focus */}
+      <Card className="w-full mb-8">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Chat with AI</span>
+            <div className="flex items-center space-x-2">
+              <Button
+                onClick={() => setShowDebug(!showDebug)}
+                variant="outline"
+                size="sm"
+                className={`${showDebug ? 'bg-blue-100 text-blue-700 border-blue-300' : 'text-gray-600'}`}
+              >
+                {showDebug ? '🔍 Hide Debug' : '🔍 Show Debug'}
+              </Button>
+              {hasActiveChat && (
+                <Button
+                  onClick={clearChat}
+                  variant="outline"
+                  size="sm"
+                  className="text-gray-600 hover:text-red-600"
+                >
+                  Clear Chat
+                </Button>
+              )}
+            </div>
           </CardTitle>
         </CardHeader>
       <CardContent>
@@ -89,6 +101,47 @@ export default function Chat() {
         </form>
       </CardContent>
     </Card>
+
+      {/* Navigation Section */}
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          Explore the RAG System
+        </h2>
+        <div className="grid md:grid-cols-3 gap-4">
+          <Link
+            href="/embed"
+            className="group p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+          >
+            <div className="text-blue-600 dark:text-blue-400 text-2xl mb-2">📝</div>
+            <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">Add Content</h3>
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              Add documents to the knowledge base
+            </p>
+          </Link>
+
+          <Link
+            href="/pipeline/data"
+            className="group p-4 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
+          >
+            <div className="text-green-600 dark:text-green-400 text-2xl mb-2">📚</div>
+            <h3 className="font-semibold text-green-900 dark:text-green-100 mb-1">Data Pipeline</h3>
+            <p className="text-sm text-green-700 dark:text-green-300">
+              See how documents become searchable
+            </p>
+          </Link>
+
+          <Link
+            href="/pipeline/query"
+            className="group p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"
+          >
+            <div className="text-purple-600 dark:text-purple-400 text-2xl mb-2">💬</div>
+            <h3 className="font-semibold text-purple-900 dark:text-purple-100 mb-1">Query Pipeline</h3>
+            <p className="text-sm text-purple-700 dark:text-purple-300">
+              See how questions get answered
+            </p>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

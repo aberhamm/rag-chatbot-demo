@@ -137,12 +137,31 @@ export default function EmbedPage() {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <div className="mb-6 flex justify-between items-center">
-        <Link
-          href="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 underline"
-        >
-          ← Back to Chat
-        </Link>
+        <div className="flex space-x-4">
+          <Link
+            href="/"
+            className="inline-flex items-center text-blue-600 hover:text-blue-800 underline"
+          >
+            ← Back to Chat
+            {hasActiveChat && (
+              <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                Active session
+              </span>
+            )}
+          </Link>
+          <Link
+            href="/pipeline/data"
+            className="inline-flex items-center text-green-600 hover:text-green-800 underline"
+          >
+            📚 Data Pipeline →
+          </Link>
+          <Link
+            href="/pipeline/query"
+            className="inline-flex items-center text-purple-600 hover:text-purple-800 underline"
+          >
+            💬 Query Pipeline →
+          </Link>
+        </div>
       </div>
 
       <Card className="w-full">
