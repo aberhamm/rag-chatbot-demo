@@ -43,20 +43,20 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
  * @param file - Path to the input text file
  */
 async function ingest(file: string) {
-  console.log(`\n🏁 Starting ingestion pipeline for: ${file}`);
+  console.log(`\n Starting ingestion pipeline for: ${file}`);
 
   // Load input file
   const raw = fs.readFileSync(file, 'utf8');
-  console.log(`📄 Loaded ${raw.length} characters from ${file}`);
+  console.log(`Loaded ${raw.length} characters from ${file}`);
 
   // Split on paragraph breaks to preserve document structure
-  console.log('✂️ Chunking text into semantic segments...');
+  console.log('Chunking text into semantic segments...');
   const lines = raw
     .split(/\r?\n\s*\r?\n/)
     .map((l) => l.trim())
     .filter(Boolean);
 
-  console.log(`📝 Created ${lines.length} initial text segments`);
+  console.log(`Created ${lines.length} initial text segments`);
 
   // Handle oversized content with intelligent splitting
   const overflowSplitter = new RecursiveCharacterTextSplitter({
@@ -64,13 +64,13 @@ async function ingest(file: string) {
     chunkOverlap: 50, // Maintain context between chunks
   });
 
-  console.log('🔍 Processing chunks and handling oversized content...');
+  console.log('Processing chunks and handling oversized content...');
   const chunks: string[] = [];
   for (const line of lines) {
     if (line.length <= MAX_CHUNK_LENGTH) {
       chunks.push(line);
     } else {
-      console.log(`📏 Splitting oversized chunk (${line.length} chars)`);
+      console.log(`Splitting oversized chunk (${line.length} chars)`);
       const sub = await overflowSplitter.splitText(line);
       chunks.push(...sub);
     }
@@ -79,34 +79,34 @@ async function ingest(file: string) {
   console.log(`✅ Final chunking complete: ${chunks.length} optimized chunks ready for embedding`);
 
   // Process in batches for 50x cost reduction vs individual calls
-  console.log(`\n🚀 Starting batch embedding process...`);
-  console.log(`📊 Configuration: ${BATCH_SIZE} chunks per batch, ${Math.ceil(chunks.length / BATCH_SIZE)} total batches`);
+  console.log(`\nStarting batch embedding process...`);
+  console.log(`Configuration: ${BATCH_SIZE} chunks per batch, ${Math.ceil(chunks.length / BATCH_SIZE)} total batches`);
 
   for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
     const batch = chunks.slice(i, i + BATCH_SIZE);
     const batchNumber = Math.floor(i / BATCH_SIZE) + 1;
     const totalBatches = Math.ceil(chunks.length / BATCH_SIZE);
 
-    console.log(`\n📦 Processing batch ${batchNumber}/${totalBatches} (${batch.length} chunks)`);
+    console.log(`\nProcessing batch ${batchNumber}/${totalBatches} (${batch.length} chunks)`);
 
     // Generate embeddings for entire batch in single API call
-    console.log('🧠 Generating embeddings for batch...');
+    console.log('Generating embeddings for batch...');
     const { embeddings } = await embedMany({
       model: openai.embedding('text-embedding-3-small'),
       values: batch,
     });
 
-    console.log(`✅ Generated ${embeddings.length} embeddings (${embeddings[0].length} dimensions each)`);
+    console.log(`Generated ${embeddings.length} embeddings (${embeddings[0].length} dimensions each)`);
 
     // Insert all embeddings into vector database
-    console.log('💾 Inserting batch into vector database...');
+    console.log('Inserting batch into vector database...');
     for (let j = 0; j < batch.length; j++) {
       const chunk = batch[j];
       const embedding = embeddings[j];
       const vectorString = `[${embedding.join(',')}]`;
 
       const globalIndex = i + j + 1;
-      console.log(`  📝 Storing chunk ${globalIndex}/${chunks.length}: "${chunk.slice(0, 60)}..."`);
+      console.log(`Storing chunk ${globalIndex}/${chunks.length}: "${chunk.slice(0, 60)}..."`);
 
       await pool.query(
         'INSERT INTO content_chunks (content, embedding, source) VALUES ($1,$2,$3)',
@@ -114,16 +114,16 @@ async function ingest(file: string) {
       );
     }
 
-    console.log(`✅ Batch ${batchNumber} successfully stored in database`);
+    console.log(`Batch ${batchNumber} successfully stored in database`);
 
     // Brief pause to be API-friendly
     if (batchNumber < totalBatches) {
-      console.log('⏱️ Brief pause before next batch...');
+      console.log('Brief pause before next batch...');
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
 
-  console.log(`\n🎉 Ingestion complete! ${chunks.length} chunks successfully embedded and stored.`);
+  console.log(`\nIngestion complete! ${chunks.length} chunks successfully embedded and stored.`);
 }
 
 // ============================================================================
@@ -134,20 +134,20 @@ async function ingest(file: string) {
  * Handles initialization, execution, and cleanup.
  */
 async function main() {
-  console.log('\n🎯 RAG Knowledge Base Construction Starting...');
+  console.log('\nRAG Knowledge Base Construction Starting...');
   console.log('===============================================');
 
   try {
     await ingest('./input/data.txt');
     await pool.end();
 
-    console.log('\n🏆 SUCCESS: Knowledge base construction complete!');
-    console.log('🔍 Your content is now searchable via semantic similarity');
-    console.log('💬 Test it by asking questions in the chat interface');
+    console.log('\nSUCCESS: Knowledge base construction complete!');
+    console.log('Your content is now searchable via semantic similarity');
+    console.log('Test it by asking questions in the chat interface');
 
   } catch (error) {
-    console.error('\n❌ FATAL ERROR during ingestion:', error);
-    console.log('\n🔧 Troubleshooting tips:');
+    console.error('\nFATAL ERROR during ingestion:', error);
+    console.log('\nTroubleshooting tips:');
     console.log('- Ensure Docker is running (docker ps)');
     console.log('- Verify DATABASE_URL is set correctly');
     console.log('- Check OPENAI_API_KEY is valid');
@@ -160,7 +160,7 @@ async function main() {
 
 // Start the process with error handling
 main().catch((err) => {
-  console.error('\n💥 Unexpected error in main process:', err);
+  console.error('\nUnexpected error in main process:', err);
   console.log('Please check your environment setup and try again.');
   process.exit(1);
 });
