@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "embed": "npx tsx scripts/embed.ts",
     "predev": "node scripts/ensure-docker.js",
     "dev": "next dev",
     "build": "next build",
