@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useHasActiveChat } from '@/contexts/ChatContext';
 
 interface FormData {
   content: string;
@@ -31,6 +32,7 @@ export default function EmbedPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [totalEmbeddings, setTotalEmbeddings] = useState<number | null>(null);
+  const hasActiveChat = useHasActiveChat();
 
   // Load current count when component mounts
   useState(() => {
@@ -134,10 +136,24 @@ export default function EmbedPage() {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <div className="mb-6">
-        <Link href="/" className="text-blue-600 hover:text-blue-800 underline">
+      <div className="mb-6 flex justify-between items-center">
+        <Link
+          href="/"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 underline"
+        >
           ← Back to Chat
+          {hasActiveChat && (
+            <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+              Active session
+            </span>
+          )}
         </Link>
+
+        {hasActiveChat && (
+          <div className="text-sm text-gray-600">
+            💬 You have an ongoing chat conversation
+          </div>
+        )}
       </div>
 
       <Card className="w-full">
@@ -237,6 +253,11 @@ export default function EmbedPage() {
               <li>• Use descriptive sources to help identify content later</li>
               <li>• Content will be automatically embedded and made searchable</li>
               <li>• You can test the content by asking related questions in the chat</li>
+              {hasActiveChat && (
+                <li className="text-green-700 font-medium">
+                  • Your chat session will be preserved when you return to continue the conversation
+                </li>
+              )}
             </ul>
           </div>
         </CardContent>

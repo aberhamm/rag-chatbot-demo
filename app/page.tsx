@@ -1,21 +1,19 @@
 'use client';
 
-import { useChat } from '@ai-sdk/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useChatContext } from '@/contexts/ChatContext';
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: '/api/chat',
-  });
+  const { messages, input, handleInputChange, handleSubmit, hasActiveChat, clearChat } = useChatContext();
 
-  const customHandleSubmit = async (e: React.FormEvent) => {
+  const customHandleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await handleSubmit(e); // Call the handleSubmit from useChat
+    handleSubmit(e);
   };
 
   const renderMessage = (message: { role: string; content: string; toolInvocations?: ToolInvocation[] }) => {
@@ -36,18 +34,36 @@ export default function Chat() {
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
-      <div className="mb-6 text-center">
+      <div className="mb-6 flex justify-between items-center">
         <Link
           href="/embed"
-          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           📝 Add Content to Knowledge Base
         </Link>
+
+        {hasActiveChat && (
+          <Button
+            onClick={clearChat}
+            variant="outline"
+            size="sm"
+            className="text-gray-600 hover:text-red-600"
+          >
+            🗑️ Clear Chat
+          </Button>
+        )}
       </div>
 
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>Chat with AI</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            <span>Chat with AI</span>
+            {hasActiveChat && (
+              <span className="text-sm font-normal text-green-600">
+                💬 Active session ({messages.length} messages)
+              </span>
+            )}
+          </CardTitle>
         </CardHeader>
       <CardContent>
         <ScrollArea className="h-[60vh] mb-4 p-4 border rounded">
