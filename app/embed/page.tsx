@@ -142,18 +142,7 @@ export default function EmbedPage() {
           className="inline-flex items-center text-blue-600 hover:text-blue-800 underline"
         >
           ← Back to Chat
-          {hasActiveChat && (
-            <span className="ml-2 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
-              Active session
-            </span>
-          )}
         </Link>
-
-        {hasActiveChat && (
-          <div className="text-sm text-gray-600">
-            💬 You have an ongoing chat conversation
-          </div>
-        )}
       </div>
 
       <Card className="w-full">

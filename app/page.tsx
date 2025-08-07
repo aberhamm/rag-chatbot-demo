@@ -38,9 +38,9 @@ export default function Chat() {
       <div className="mb-6 flex justify-between items-center">
         <Link
           href="/embed"
-          className="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-flex text-sm font-normal items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
-          📝 Add Content to Knowledge Base
+          Add Content to Knowledge Base
         </Link>
 
         {hasActiveChat && (
@@ -50,7 +50,7 @@ export default function Chat() {
             size="sm"
             className="text-gray-600 hover:text-red-600"
           >
-            🗑️ Clear Chat
+            Clear Chat
           </Button>
         )}
       </div>
@@ -59,11 +59,6 @@ export default function Chat() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Chat with AI</span>
-            {hasActiveChat && (
-              <span className="text-sm font-normal text-green-600">
-                💬 Active session ({messages.length} messages)
-              </span>
-            )}
           </CardTitle>
         </CardHeader>
       <CardContent>
