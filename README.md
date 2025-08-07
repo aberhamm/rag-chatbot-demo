@@ -34,19 +34,28 @@ NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key-here
 ```
 
-### 2. Start the Database
+### 2. Start the Application
 
-Start the PostgreSQL database with pgvector using Docker Compose:
+The database will automatically start when you run the development server:
 
 ```bash
-docker-compose up -d
+npm run dev
 ```
 
 This will:
+- **Automatically check and start Docker services** if not running
 - Start a PostgreSQL 17 container with pgvector extension
 - Create the `ragchatbot_db` database
 - Run the schema setup from `postgres/schema.sql`
 - Make the database available on `localhost:5432`
+- Start the Next.js development server
+
+**Manual Database Control** (optional):
+```bash
+npm run docker:up    # Start database manually
+npm run docker:down  # Stop database
+npm run docker:logs  # View database logs
+```
 
 ### 3. Install Dependencies
 
@@ -71,13 +80,7 @@ This will:
 - Generate embeddings using OpenAI's text-embedding-3-small
 - Store them in PostgreSQL with pgvector
 
-### 6. Start the Application
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to use the chatbot.
+Now simply open [http://localhost:3000](http://localhost:3000) to use the chatbot (the dev server is already running from step 2)!
 
 ## Usage
 
