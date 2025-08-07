@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RAG Chatbot Demo
+
+A Next.js chatbot application that uses RAG (Retrieval-Augmented Generation) to answer questions based on your knowledge base. The chatbot searches through embedded documents using vector similarity and provides context-aware responses.
+
+## Features
+
+- 🤖 AI-powered chatbot using OpenAI GPT-4
+- 🔍 Vector search through your knowledge base
+- 📊 PostgreSQL with pgvector for vector storage
+- 🛠️ Debug mode to inspect tool calls and search results
+- ⚡ Batch embedding processing for performance
+
+## Prerequisites
+
+- Node.js 18+
+- Docker and Docker Compose
+- OpenAI API key
 
 ## Getting Started
 
-First, run the development server:
+### 1. Environment Setup
+
+Create a `.env` file in the project root:
+
+```bash
+# Database configuration
+DATABASE_URL=postgresql://postgres:password@localhost:5432/ragchatbot_db
+
+# OpenAI API key (replace with your actual API key)
+OPENAI_API_KEY=your-openai-api-key-here
+
+# Next.js configuration (optional)
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key-here
+```
+
+### 2. Start the Database
+
+Start the PostgreSQL database with pgvector using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will:
+- Start a PostgreSQL 17 container with pgvector extension
+- Create the `ragchatbot_db` database
+- Run the schema setup from `postgres/schema.sql`
+- Make the database available on `localhost:5432`
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Prepare Your Data
+
+Add your text data to `input/data.txt`. The script will split this into chunks and embed them.
+
+### 5. Embed Your Data
+
+Process and embed your data into the vector database:
+
+```bash
+npx tsx scripts/embed.ts
+```
+
+This will:
+- Split your text into chunks
+- Generate embeddings using OpenAI's text-embedding-3-small
+- Store them in PostgreSQL with pgvector
+
+### 6. Start the Application
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to use the chatbot.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Ask Questions**: Type questions related to your embedded data
+2. **View Responses**: The AI will search your knowledge base and provide contextual answers
+3. **Debug Mode**: Click "Debug: Tool calls" to see:
+   - Search queries used
+   - Retrieved document chunks
+   - Similarity rankings
+   - Source information
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+├── app/
+│   ├── api/chat/route.ts    # Chat API endpoint
+│   └── page.tsx             # Main chat interface
+├── tools/
+│   └── vectorSearch.ts      # Vector search tool implementation
+├── scripts/
+│   ├── embed.ts             # Batch embedding script
+│   └── query.ts             # Test query script
+├── postgres/
+│   └── schema.sql           # Database schema
+├── input/
+│   └── data.txt             # Your source data
+└── docker-compose.yml       # PostgreSQL + pgvector setup
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Troubleshooting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Database Connection Issues
+- Ensure Docker is running: `docker ps`
+- Check database logs: `docker-compose logs db`
+- Verify connection: `npx tsx scripts/query.ts "test query"`
 
-## Deploy on Vercel
+### Embedding Issues
+- Verify OpenAI API key is set correctly
+- Check input data format in `input/data.txt`
+- Monitor embedding progress in console output
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Chat Not Responding
+- Ensure database has embedded data
+- Check browser console for errors
+- Verify API key and database connection
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+- `npm run dev` - Start development server
+- `npx tsx scripts/embed.ts` - Embed your data
+- `npx tsx scripts/query.ts "your question"` - Test vector search
+
+## Technologies
+
+- **Frontend**: Next.js 15, React 19, Tailwind CSS
+- **Backend**: Next.js API Routes, AI SDK
+- **Database**: PostgreSQL 17 with pgvector
+- **AI**: OpenAI GPT-4 and text-embedding-3-small
+- **Infrastructure**: Docker Compose
